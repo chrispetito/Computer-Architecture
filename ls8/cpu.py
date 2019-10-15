@@ -1,6 +1,9 @@
 """CPU functionality."""
 
 import sys
+HLT = 0b00000001
+LDI = 0b10000010
+PRN = 0b01000111
 
 class CPU:
     """Main CPU class."""
@@ -64,7 +67,26 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
+        operand_a = self.ram_read(self.pc + 1)
+        operand_b = self.ram_read(self.pc + 2)
+        is_running = True
+        while is_running is True:
+            cmd = self.ram[self.pc]
+
+            if cmd == LDI:
+                self.registers[operand_a] = operand_b
+                self.pc += 3
+            elif cmd == PRN:
+                print(self.registers[operand_a])
+                # print(self.registers)
+                self.pc += 2
+            elif cmd == HLT:
+                is_running = False
+                sys.exit(1)
+            else:
+                print(f'Unknown command: {cmd}')
+                sys.exit(1)
+
     def ram_read(self, mar):
         return self.ram[mar]
     def ram_write(self, mdr, value):
