@@ -100,6 +100,9 @@ class CPU:
                 self.alu('MUL', operand_a, operand_b)
                 # self.reg[operand_a] *= self.reg[operand_b]
                 self.pc += 3
+            elif ir == ADD:
+                self.alu('ADD', operand_a, operand_b)
+                self.pc += 3
             elif ir == PUSH:
                 self.sp -= 1
                 self.ram[self.sp] = self.reg[operand_a]
@@ -114,11 +117,8 @@ class CPU:
                 # reg = self.ram[self.pc + 1]
                 self.pc = self.reg[operand_a]
             elif ir == RET:
-                self.pc = self.ram[self.reg[self.sp]]
-                self.reg[self.sp] += 1
-            
-            elif ir == ADD:
-                self.alu('ADD', operand_a, operand_b)
+                self.pc = self.ram[self.sp]
+                self.sp += 1
             else:
                 print(f'Unknown command: {ir}')
                 sys.exit(1)
