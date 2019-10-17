@@ -7,6 +7,9 @@ PRN = 0b01000111
 MUL = 0b10100010 
 PUSH = 0b01000101
 POP = 0b01000110
+CALL = 0b01010000
+RET = 0b00010001
+ADD = 0b10100000
 
 print('argv',sys.argv)
 
@@ -18,7 +21,7 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8
         self.pc = 0
-        self.sp = 0x4F
+        self.sp = 0
 
     def load(self, filename):
         """Load a program into memory."""
@@ -105,6 +108,17 @@ class CPU:
                 self.reg[operand_a] = self.ram[self.sp]
                 self.sp += 1
                 self.pc += 2
+            elif ir == CALL:
+                self.sp -= 1
+                self.ram[self.sp] = self.pc + 2
+                # reg = self.ram[self.pc + 1]
+                self.pc = self.reg[operand_a]
+            elif ir == RET:
+                self.pc = self.ram[self.reg[self.sp]]
+                self.reg[self.sp] += 1
+            
+            elif ir == ADD:
+                self.alu('ADD', operand_a, operand_b)
             else:
                 print(f'Unknown command: {ir}')
                 sys.exit(1)
